@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 /**
+ * 
  * @see http://grepcode.com/file/repo1.maven.org/maven2/org.robolectric/android-all/4.4_r1-robolectric-1/android/hardware/SensorManager.java
  * @see http://www.vogella.com/tutorials/AndroidSensor/article.html
  * @see http://developer.android.com/intl/pt-br/reference/android/hardware/SensorManager.html
