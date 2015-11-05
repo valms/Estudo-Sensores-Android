@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.TextView;
 
 public class SensoresActivity extends AppCompatActivity implements SensorEventListener {
     private SensorManager sensorManager;
@@ -16,6 +17,7 @@ public class SensoresActivity extends AppCompatActivity implements SensorEventLi
     private long ultimaAtualizacao = 0;
     private float last_x, last_y, last_z;
     private static final int SINAL_BALANCO = 600;
+    private TextView textView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +28,10 @@ public class SensoresActivity extends AppCompatActivity implements SensorEventLi
         setContentView(R.layout.activity_sensores);
 
         this.sensorManager = (SensorManager) this.getSystemService(SENSOR_SERVICE);
-        this.sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        this.sensor = sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE);
+
+        textView = (TextView) findViewById(R.id.textView);
+
 
     }
 
@@ -45,10 +50,7 @@ public class SensoresActivity extends AppCompatActivity implements SensorEventLi
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-            tratarDadosAcelerometro(event);
-        }
-
+        tratarDadosAcelerometro(event);
     }
 
 
@@ -61,9 +63,8 @@ public class SensoresActivity extends AppCompatActivity implements SensorEventLi
     private void tratarDadosAcelerometro(SensorEvent sensorEvent) {
         float dadosSensor[] = sensorEvent.values;
 
-//        for (int i = 0; i < dadosSensor.length; i++) {
-//            Log.e("DADO SENSOR", String.valueOf(dadosSensor[i]));
-//        }
+        textView.setText("X:" + String.valueOf(dadosSensor[0]) + "\nY: " + String.valueOf(dadosSensor[2])
+                + "\nZ:" + String.valueOf(dadosSensor[2]));
 
     }
 }
