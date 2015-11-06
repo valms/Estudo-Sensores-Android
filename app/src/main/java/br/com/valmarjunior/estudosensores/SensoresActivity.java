@@ -9,15 +9,20 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.RotateAnimation;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class SensoresActivity extends AppCompatActivity implements SensorEventListener {
     private SensorManager sensorManager;
-    private Sensor sensor;
-    private long ultimaAtualizacao = 0;
-    private float last_x, last_y, last_z;
-    private static final int SINAL_BALANCO = 600;
+    private Sensor sensorMagnetico;
+    private Sensor sensorAcelerometro;
+    private ImageView imageView;
     private TextView textView;
+    private float direcaoAtual = 0f;
+    private float[] dadosGeoreferenciado;
+    private float[] dadosGeomagneticos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,10 +32,12 @@ public class SensoresActivity extends AppCompatActivity implements SensorEventLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sensores);
 
-        this.sensorManager = (SensorManager) this.getSystemService(SENSOR_SERVICE);
-        this.sensor = sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE);
+        this.imageView = (ImageView) this.findViewById(R.id.imagemBussula);
+        this.textView = (TextView) this.findViewById(R.id.textViewGraus);
 
-        textView = (TextView) findViewById(R.id.textView);
+        this.sensorManager = (SensorManager) this.getSystemService(SENSOR_SERVICE);
+        this.sensorMagnetico = this.sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
+        // this.sensorAcelerometro = this.sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
 
     }
@@ -38,7 +45,8 @@ public class SensoresActivity extends AppCompatActivity implements SensorEventLi
     @Override
     protected void onResume() {
         super.onResume();
-        this.sensorManager.registerListener(this, this.sensor, SensorManager.SENSOR_DELAY_NORMAL);
+        this.sensorManager.registerListener(this, this.sensorMagnetico, SensorManager.SENSOR_DELAY_GAME);
+        this.sensorManager.registerListener(this, this.sensorAcelerometro, SensorManager.SENSOR_DELAY_GAME);
     }
 
     @Override
@@ -50,7 +58,7 @@ public class SensoresActivity extends AppCompatActivity implements SensorEventLi
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        tratarDadosAcelerometro(event);
+        tratarDadosSensores(event);
     }
 
 
@@ -60,11 +68,21 @@ public class SensoresActivity extends AppCompatActivity implements SensorEventLi
     }
 
 
-    private void tratarDadosAcelerometro(SensorEvent sensorEvent) {
-        float dadosSensor[] = sensorEvent.values;
+    private void tratarDadosSensores(SensorEvent sensorEvent) {
 
-        textView.setText("X:" + String.valueOf(dadosSensor[0]) + "\nY: " + String.valueOf(dadosSensor[2])
-                + "\nZ:" + String.valueOf(dadosSensor[2]));
+        float graus = Math.round(sensorEvent.values[0]);
+
+        this.textView.setText(String.valueOf(graus));
+
+
+        RotateAnimation rotateAnimation = new RotateAnimation(direcaoAtual, -graus,
+                Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+
+        rotateAnimation.setDuration(210);
+        rotateAnimation.setFillAfter(true);
+        imageView.startAnimation(rotateAnimation);
+        direcaoAtual = -graus;
+
 
     }
 }

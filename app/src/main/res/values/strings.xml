@@ -1,4 +1,7 @@
 <resources>
-    <string name="app_name">Estudo Sensores</string>
-    <string name="action_settings">Settings</string>
+    <string name="app_name">Bússola</string>
+    <string name="action_settings">Configurações</string>
+    <string name="coordenadas">Coordenadas</string>
+    <string name="graus">Graus</string>
+    <string name="Nulo">Nulo</string>
 </resources>
